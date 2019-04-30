@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponse
-import json,Queue,datetime
+import json,queue,datetime
 from webuser.models import Webuser
 from django.contrib.auth.decorators import login_required
 # Create your views here.
@@ -19,12 +19,12 @@ def contacts(request):
     for i in contacts:
         webuser = Webuser.objects.get(pk=i['id'])
         i["pictures"] = webuser.get_picture()
-    print contacts
+    print(contacts)
     contact_dic['contact_list'] = list(contacts)
     groups = request.user.webuser.chatgroup_set.select_related().values('id','name','memberlimits')
-    print groups
+    print(groups)
     contact_dic['group_list'] = list(groups)
-    print contact_dic
+    print(contact_dic)
 
     return HttpResponse(json.dumps(contact_dic))
 
@@ -33,11 +33,11 @@ def newmsg(request):
         data = json.loads(request.POST.get('data'))
         send_to = data['to']
         if send_to not in GLOBAL_MQ:
-            GLOBAL_MQ[send_to] = Queue.Queue()
+            GLOBAL_MQ[send_to] = queue.Queue()
         data['timestamp'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         GLOBAL_MQ[send_to].put(data)
-        print GLOBAL_MQ
-        print GLOBAL_MQ[send_to]
+        print(GLOBAL_MQ)
+        print(GLOBAL_MQ[send_to])
         return HttpResponse(GLOBAL_MQ[send_to].qsize())
     else:
         request_user_id = str(request.user.webuser.id)
@@ -48,10 +48,10 @@ def newmsg(request):
                 try:
                     msg_list.append(GLOBAL_MQ[request_user_id].get(timeout=15))
                 except Exception as e:
-                    print "ERROR",e
+                    print("ERROR",e)
             for i in range(stored_ms_nums):
                 msg_list.append(GLOBAL_MQ[request_user_id].get())
         else:
-            GLOBAL_MQ[request_user_id]=Queue.Queue()
-        print msg_list
+            GLOBAL_MQ[request_user_id]=queue.Queue()
+        print(msg_list)
         return HttpResponse(json.dumps(msg_list))

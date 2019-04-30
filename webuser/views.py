@@ -39,7 +39,7 @@ def weblogin(request):
         return redirect('/')
     if request.method=="POST":
         form = LoginForm(request.POST)
-        print form.is_valid()
+        print(form.is_valid())
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password= form.cleaned_data.get('password')
@@ -109,7 +109,7 @@ def picture(request):
     try:
         if request.GET.get('upload_picture') == 'uploaded':
             uploaded_picture = True
-    except Exception ,e:
+    except Exception:
         pass
     return render(request,'webuser/picture.html',{'uploaded_picture':uploaded_picture,'MEDIA_URL':django_settings.MEDIA_URL})
 
@@ -133,7 +133,7 @@ def upload_picture(request):
             im.thumbnail(new_size,Image.ANTIALIAS)
             im.save(filename)
         return redirect('/settings/picture/?upload_picture=uploaded')
-    except Exception,e:
+    except Exception:
         return redirect('/settings/picture/')
 
 @login_required
@@ -150,7 +150,7 @@ def save_uploaded_picture(request):
         cropped_im.thumbnail((200,200),Image.ANTIALIAS)
         cropped_im.save(filename)
         os.remove(tmp_filename)
-    except Exception,e:
+    except Exception:
         pass
     return redirect('/settings/picture')
 
@@ -167,7 +167,7 @@ def addfriends(request):
         data = json.loads(request.POST.get('data'))
         friendid = data['friendid']
         actiontype = data['actiontype']
-        print friendid,actiontype
+        print(friendid,actiontype)
         if actiontype == u'friend':
             webuser = request.user.webuser
             friend = Webuser.objects.get(pk=friendid)

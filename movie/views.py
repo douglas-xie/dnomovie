@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import random
 from django.shortcuts import render,redirect
-from models import Movie,MovieHistory
-from forms import MovieInfoForm
+from .models import Movie,MovieHistory
+from .forms import MovieInfoForm
 from django.core.paginator import Paginator,InvalidPage,EmptyPage,PageNotAnInteger
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -18,7 +18,9 @@ def getmovielist(request):
     try:
         page=request.GET.get('page')
         if page is not None:
-            page =int(page)
+            page = int(page)
+        else:
+            page = 1
         filtertype=request.GET.get('filtertype')
         filterparam=request.GET.get('filterparam')
         if page<1:
@@ -72,6 +74,8 @@ def getlatestmovielist(request):
         page=request.GET.get('page')
         if page is not None:
             page =int(page)
+        else:
+            page = 1
         filtertype=request.GET.get('filtertype')
         filterparam=request.GET.get('filterparam')
         if page<1:
@@ -111,7 +115,9 @@ def getfilmfestlist(request):
     try:
         page=request.GET.get('page')
         if page is not None:
-            page =int(page)
+            page = int(page)
+        else:
+            page = 1
         filtertype=request.GET.get('filtertype')
         filterparam=request.GET.get('filterparam')
         if page<1:

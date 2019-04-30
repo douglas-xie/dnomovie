@@ -40,7 +40,7 @@ class Webuser(models.Model):
                 #     )
                 gravatar_url='http://localhost:8000/static/img/user1.png'
                 return gravatar_url
-        except Exception, e:
+        except Exception:
             return no_picture
 
     def get_screen_name(self):

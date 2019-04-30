@@ -6,11 +6,11 @@ from django.contrib import auth
 from django.utils.safestring import mark_safe
 
 #实现水平排列单选按钮
-class HorizontalRadioRenderer(forms.RadioSelect.renderer):
+class HorizontalRadioRenderer(forms.RadioSelect):
     def render(self):
         return mark_safe(u'\n'.join([u'&nbsp;&nbsp;&nbsp;%s\n ' % w for w in self]))
 
-class HorizontalCheckRenderer(forms.CheckboxSelectMultiple.renderer):
+class HorizontalCheckRenderer(forms.CheckboxSelectMultiple):
     def render(self):
         return mark_safe(u'\n'.join([u'&nbsp;&nbsp;&nbsp;%s\n ' % w for w in self]))
 def SignupDomainValidator(value):
@@ -19,7 +19,7 @@ def SignupDomainValidator(value):
             domain = value[value.index("@"):]
             if domain not in ['*']:
                 raise ValidationError(u'Invalid domain. Allowed domains on this network: {0}'.format(','.join(ALLOWED_SIGNUP_DOMAINS)))
-        except Exception, e:
+        except Exception:
             raise ValidationError(u'Invalid domain. Allowed domains on this network: {0}'.format(','.join(ALLOWED_SIGNUP_DOMAINS)))
 
 def ForbiddenUsernamesValidator(value):
@@ -113,10 +113,10 @@ class ProfileForm(forms.ModelForm):
                           max_length=50,required=False,label=u'个人主页')
     location = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),
                               max_length=50,required=False,label=u'省市')
-    job_title = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(renderer=HorizontalCheckRenderer),choices=JOB_CHOICE,
+    job_title = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(),choices=JOB_CHOICE,
         required=False,label=u'职业')
-    sex = forms.IntegerField(widget=forms.RadioSelect(choices=((0, u'男'),(1, u'女')),attrs={'class':'radio-inline'},renderer=HorizontalRadioRenderer),label=u'性别')
-    likestyle = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(renderer=HorizontalCheckRenderer),choices=LIKE_STYLE_CHOICE,label=u'喜欢类型')
+    sex = forms.IntegerField(widget=forms.RadioSelect(choices=((0, u'男'),(1, u'女')),attrs={'class':'radio-inline'}),label=u'性别')
+    likestyle = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(),choices=LIKE_STYLE_CHOICE,label=u'喜欢类型')
 
 
     class Meta:
@@ -141,7 +141,7 @@ class ChangePasswordForm(forms.ModelForm):
         new_password = self.cleaned_data.get('new_password')
         confirm_password = self.cleaned_data.get('confirm_password')
         id = self.cleaned_data.get('id')
-        print id
+        print(id)
         user = User.objects.get(pk=id)
         if not user.check_password(old_password):
             self._errors['old_password'] = self.error_class([u'旧密码不对.'])
@@ -164,9 +164,9 @@ class ChangeEmailForm(forms.ModelForm):
         old_email = self.cleaned_data.get('old_email')
         new_email= self.cleaned_data.get('new_email')
         id = self.cleaned_data.get('id')
-        print id
+        print(id)
         user = User.objects.get(pk=id)
-        print user.email
+        print(user.email)
         if not old_email == user.email:
             self._errors['old_email'] = self.error_class([u'旧邮箱不对.'])
         return self.cleaned_data

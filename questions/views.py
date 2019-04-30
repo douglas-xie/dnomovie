@@ -92,7 +92,7 @@ def accept(request):
     user = request.user
     try:
         user.webuser.unotify_accepted(answer.question.get_accepted_answer())
-    except Exception, e:
+    except Exception:
         pass
     if answer.question.user == user:
         answer.accept()

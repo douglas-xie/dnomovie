@@ -1,6 +1,8 @@
 __author__ = 'hadoop'
 from django.conf.urls import url
 from . import views
+from django.contrib.auth.views import logout
+
 urlpatterns = [
     url(r'^index/$',views.index,name='index'),
     url(r'^register/$',views.register, name='register'),
@@ -13,5 +15,5 @@ urlpatterns = [
     url(r'^changeemail/$',views.changeemail,name='changeemail'),
     url(r'^getuserinfo/(?P<userinfoid>\d+)/$',views.getuserinfo,name='getuserinfo'),
     url(r'^addfriends/$',views.addfriends,name='addfriends'),
-    url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
+    url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
 ]
